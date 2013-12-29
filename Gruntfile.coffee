@@ -7,6 +7,13 @@ module.exports = (grunt) ->
     banner: '/*! hngDateTimePicer v<%= pkg.version %> by Hareesh(hareeshbabu82ns@gmail.com) - ' +
     'https://github.com/hareeshbabu82ns/hng-date-time - New BSD License */\n',
 
+  # watch for changes
+    watch:
+      src:[
+        files: ['src/scripts/*.js','src/styles/*.css']
+        tasks: ['default']
+      ]
+
   # Deletes built file and temp directories.
     clean:
       working:
@@ -60,7 +67,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-
+  grunt.loadNpmTasks 'grunt-contrib-watch'
 
   # Register grunt tasks supplied by grunt-hustler.
   # Referenced in package.json.
@@ -71,6 +78,7 @@ module.exports = (grunt) ->
     'clean'
     'less'
     'copy'
+    'watch'
   ]
   grunt.registerTask 'default', [
     'dev'

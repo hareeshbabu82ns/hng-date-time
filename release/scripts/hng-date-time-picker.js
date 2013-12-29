@@ -17,7 +17,12 @@
 
     var app = angular.module('hngDateTimePicker', []);
 
-    app.value('hngDateTimePickerConfig', {});
+    app.value('hngDateTimePickerConfig', {
+        datepicker: {
+            useDate: 'local',
+            inline: false
+        }
+    });
     /**
      * @ngdoc directive
      * @name hngDateTimePicker.directive:hngDateTimePicker
@@ -26,8 +31,8 @@
      * @description
      * Directive that instantiates {@link hngDateTimePicker.directive:hngDateTimePicker}.
      */
-    app.directive('hngDateTimePicker', ['$timeout', 'hngDateTimePickerConfig',
-        function ($timeout, $hngConfig) {
+    app.directive('hngDateTimePicker', ['$timeout', 'hngDateTimePickerConfig', '$filter',
+        function ($timeout, $hngConfig, $filter) {
             return {
                 restrict: 'A',
                 require: '?ngModel',
@@ -37,7 +42,8 @@
                     pickSeconds: '=',
                     time12Format: '=',
                     maskInput: '=',
-                    pickerType: '='
+                    pickerType: '=',
+                    useDate: '=' // [ 'local', 'utc' ]
                 },
                 link: function postLink(scope, element, attrs, ngModel) {
                     var options = angular.extend({
@@ -47,7 +53,8 @@
                             pickSeconds: scope.pickSeconds,
                             maskInput: scope.maskInput
                         },
-                        $hngConfig.datepicker || {});
+                        $hngConfig.datepicker || { });
+                    var dateSetter = 'setDate';
                     angular.forEach([
                         'format',
                         'viewMode',
@@ -69,6 +76,10 @@
                     if (scope.maskInput === undefined) {
                         options['maskInput'] = true;
                     }
+                    if (scope.useDate === undefined) {
+                        useDate = 'local';
+                        dateSetter = 'setLocalDate'
+                    }
                     if (attrs.type) {
                         if (attrs.type == 'date') {
                             options['pickDate'] = true;
@@ -85,14 +96,29 @@
                     //  options['pickDate'] = true;
                     //  options['pickTime'] = true;
                     //}
+                    if(options['pickDate'] === undefined
+                        && options['pickTime'] === undefined){
+                        options['pickDate'] = true;
+                        options['pickTime'] = true;
+                    }
+                    if(options['pickDate'] === undefined){
+                        options['pickDate'] = false;
+                    }
+                    if(options['pickTime'] === undefined){
+                        options['pickTime'] = false;
+                    }
                     if (ngModel) {
 
                         // $timeout(function(){
                         element.datetimepicker(options);
                         ngModel.$render = function ngModelRender() {
                             if (!ngModel.$viewValue)
-                                element.datetimepicker('setLocalDate', new Date()); //'setDate' - UTC date
-                            return element.datetimepicker('setLocalDate', ngModel.$viewValue);
+                                return element.datetimepicker(dateSetter, new Date()); //'setDate' - UTC date
+                            else if (typeof ngModel.$viewValue === 'string')
+                                return element.datetimepicker(dateSetter,
+                                    new Date(ngModel.$viewValue));
+                            else
+                                return element.datetimepicker(dateSetter, ngModel.$viewValue);
                         };
                         //   ngModel.$render();
                         // });
@@ -100,6 +126,15 @@
                             scope.$apply(function () {
                                 ngModel.$setViewValue(ev.localDate); //ev.date - UTC date
                             });
+                        });
+                        attrs.$observe('useDate', function (value) {
+                            if (value == 'utc') {
+                                useDate = 'utc';
+                                dateSetter = 'setDate';
+                            } else {
+                                useDate = 'local';
+                                dateSetter = 'setLocalDate';
+                            }
                         });
                         attrs.$observe('startDate', function (value) {
                             element.datetimepicker('setStartDate', value);

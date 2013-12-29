@@ -18,71 +18,71 @@
 </head>
 
 <body ng-app="app" ng-controller="tstCtrl">
+<div class="container">
+    <div class="row">
+        <form class="form-horizontal" role="form">
 
-<div class="row">
-    <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="assignedon1" class="col-sm-3 control-label">
+                    Assigned On</label>
 
-        <div class="form-group">
-            <label for="assignedon1" class="col-sm-3 control-label">
-                Assigned On</label>
-
-            <div class="col-sm-3 input-group">
-                <input type="date" class="form-control" id="assignedon1"
-                       placeholder="Assigned On"
-                       ng-model="assignedon" hng-date-time-picker
-                       format="ddd dd-MMM-yyyy">
+                <div class="col-sm-3 input-group">
+                    <input type="text" class="form-control" id="assignedon1"
+                           placeholder="Assigned On" pick-date="true"
+                           ng-model="assignedon" hng-date-time-picker
+                           format="ddd dd-MMM-yyyy">
           <span class="input-group-btn" data-toggle="datetimepicker">
             <button class="btn btn-default" type="button">
                 <i class="glyphicon glyphicon-calendar"></i>
             </button>
           </span>
-            </div>
+                </div>
 
-            <div class="col-sm-2 input-group">
-                <input type="time" class="form-control" id="assignedon2"
-                       placeholder="Assigned On"
-                       ng-model="assignedon" hng-date-time-picker
-                       format="HH:mm PP">
+                <div class="col-sm-2 input-group">
+                    <input type="text" class="form-control" id="assignedon2"
+                           placeholder="Assigned On" pick-time="true"
+                           ng-model="assignedon" hng-date-time-picker
+                           format="HH:mm PP">
           <span class="input-group-btn" data-toggle="datetimepicker">
             <button class="btn btn-default" type="button">
                 <i class="glyphicon glyphicon-time"></i>
             </button>
           </span>
+                </div>
+
             </div>
 
-        </div>
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
 
-        <div class="form-group">
-            <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
-
-            <div class="col-sm-4">
-                <input type="email" class="form-control" id="inputEmail3"
-                       placeholder="Email">
+                <div class="col-sm-4">
+                    <input type="email" class="form-control" id="inputEmail3"
+                           placeholder="Email">
+                </div>
             </div>
-        </div>
 
-    </form>
-</div>
-<div class="row">
-    <div class="well col-sm-8 col-sm-offset-2">
+        </form>
+    </div>
+    <div class="row">
+        <div class="well col-sm-8 col-sm-offset-2">
       <pre>{{ assignedon | date:'dd-MMM-yyyy hh:mm:ss a' }}
         {{assignedon}}
       </pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Inline Date Timer:</h2>
+
+            <div id="dt"></div>
+        </div>
+        <div class="col-sm-6">
+            <h2>Inline Date Timer:ng</h2>
+
+            <div ng-model="assignedon" hng-date-time-picker inline="true"></div>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6">
-        <h2>Inline Date Timer:</h2>
-
-        <div id="dt"></div>
-    </div>
-    <div class="col-sm-6">
-        <h2>Inline Date Timer:ng</h2>
-
-        <div ng-model="assignedon" hng-date-time-picker inline="true"></div>
-    </div>
-</div>
-
 <script>
     (function ($) {
         $('#dt').datetimepicker({inline: true});
