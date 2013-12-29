@@ -6,8 +6,7 @@
         "hng-date-time-picker.css"
     ],
     "ignore": [
-        "examples",
-        "src"
+        "examples"
     ],
     "dependencies": {
         "angular": "~1.2.3"

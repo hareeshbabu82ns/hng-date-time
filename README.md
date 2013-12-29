@@ -12,7 +12,7 @@ only tested in modern browsers
 
 ## Installing via Bower
 ```
-bower install hng-date-time
+bower install hareeshbabu82ns/hng-date-time
 ```
 
 ## Examples (todo)
