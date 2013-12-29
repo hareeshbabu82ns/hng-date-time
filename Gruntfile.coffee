@@ -23,15 +23,17 @@ module.exports = (grunt) ->
         ]
       js:
         files: [
-          src: './src/*.js'
-          dest: 'release/'
+          expand: true
+          src: ['./src/scripts/*.js']
+          dest: 'release/scripts/'
+          flatten: true
         ]
 
     uglify:
     # concat js files before minification
       js:
-        src: ['./src/*.js']
-        dest: './release/src/<%= pkg.name %>.min.js'
+        src: ['./src/scripts/*.js']
+        dest: './release/scripts/<%= pkg.name %>.min.js'
         options:
           banner: '<%= banner %>'
           sourceMap: (fileName) ->
@@ -48,14 +50,6 @@ module.exports = (grunt) ->
           'release/styles/bootstrap-datetimepicker.min.css': 'src/styles/bootstrap-datetimepicker.css'
         options:
           banner: '<%= banner %>'
-
-    ngTemplateCache:
-      views:
-        files:
-          './release/scripts/views.js': 'src/**/*.html'
-        options:
-          trim: 'src/'
-          module: 'hngDateTimePicker'
 
   # Register grunt tasks supplied by grunt-contrib-*.
   # Referenced in package.json.
@@ -75,7 +69,6 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'dev', [
     'clean'
-    'ngTemplateCache'
     'less'
     'copy'
   ]
