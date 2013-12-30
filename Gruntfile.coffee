@@ -7,20 +7,49 @@ module.exports = (grunt) ->
     banner: '/*! hngDateTimePicer v<%= pkg.version %> by Hareesh(hareeshbabu82ns@gmail.com) - ' +
     'https://github.com/hareeshbabu82ns/hng-date-time - New BSD License */\n',
 
+  # Glob CONSTANTS
+    TEST_DIR:       'test/'
+    BUILD_DIR:      'release/'
+    SRC_DIR:        'src/'
+    BOWER_DIR:      'bower_components/'
+
+    ALL_FILES: '**/*'
+    CSS_FILES: '**/*.css'
+    HTML_FILES: '**/*.html'
+    IMG_FILES: '**/*.{png,gif,jpg,jpeg}'
+    JS_FILES: '**/*.js'
+    LESS_FILES: '**/*.less'
+
   # watch for changes
     watch:
-      src:[
-        files: ['src/scripts/*.js','src/styles/*.css']
-        tasks: ['default']
-      ]
+      options:
+        debounceDelay: 200
+        livereload: true
+        nospawn: true
+
+        build:
+          files: [ '<%= BUILD_DIR + ALL_FILES %>', '!**/<%= BOWER_DIR %>/**' ]
+
+        js:
+          files: '<%= SRC_DIR + JS_FILES %>'
+          tasks: [ 'copy:js' ]
+
+        less:
+          files: '<%= SRC_DIR + LESS_FILES %>'
+          tasks: [ 'less' , 'copy:styles']
+
+        src: [
+          files: ['<%= SRC_DIR + ALL_FILES %>',
+                  '<%= TEST_DIR + ALL_FILES %>']
+          tasks: ['dev']
+        ]
 
   # Deletes built file and temp directories.
     clean:
       working:
         src: [
           './src/bootstrap-datetimepicker.css'
-          './release/'
-          './release/views'
+          '<%= BUILD_DIR %>'
         ]
     copy:
       styles:
@@ -67,7 +96,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-  grunt.loadNpmTasks 'grunt-contrib-watch'
+  #grunt.loadNpmTasks 'grunt-contrib-watch'
 
   # Register grunt tasks supplied by grunt-hustler.
   # Referenced in package.json.
@@ -78,7 +107,7 @@ module.exports = (grunt) ->
     'clean'
     'less'
     'copy'
-    'watch'
+    #'watch'
   ]
   grunt.registerTask 'default', [
     'dev'

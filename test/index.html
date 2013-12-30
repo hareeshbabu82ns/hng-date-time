@@ -77,17 +77,23 @@
             <div id="dt"></div>
         </div>
         <div class="col-sm-6">
-            <h2>Inline Date Timer:ng</h2>
-
-            <div ng-model="assignedon" hng-date-time-picker inline="true"></div>
+            <h2>Inline Date Timer:ng(UTC Time)</h2>
+            <button type="button" data-ng-click="chgRange()">Change Date Range</button>
+            <div ng-model="assignedon" hng-date-time-picker inline="true"
+                 use-date="utc" start-date="startDate" end-date="endDate"></div>
         </div>
     </div>
 </div>
 <script>
     (function ($) {
-        $('#dt').datetimepicker({inline: true});
+        $('#dt').datetimepicker({inline: true, format: 'yyyy-MM-dd',
+            startDate: "2013-12-10", endDate: new Date("2013-12-20")
+        });
         $('#dt').css({width: 300, height: 300});
-    })(jQuery);
+        $('#dt').datetimepicker('setValue', '2013-12-14');
+        //$('#dt').datetimepicker('setValue','2013-12-11T11:51:41.636Z');
+    })
+            (jQuery);
 </script>
 </body>
 

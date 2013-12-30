@@ -27,7 +27,7 @@
             this.pickDate = options.pickDate;
             this.pickTime = options.pickTime;
             this.isInput = this.$element.is('input');
-            this.isInline = (options.inline)?options.inline:false;
+            this.isInline = (options.inline) ? options.inline : false;
             this.component = false;
             //if (this.$element.parent('.input-group').length > 0 )
             //this.component = this.$element.parent('.input-group').find('.btn');
@@ -55,10 +55,10 @@
                 }
             }
             this.widget = $(getTemplate(this.timeIcon, options.pickDate, options.pickTime, options.pick12HourFormat, options.pickSeconds, options.collapse));
-            if(this.isInline){
+            if (this.isInline) {
                 this.widget.appendTo(this.$element);
                 this.widget.addClass('inline');
-            }else{
+            } else {
                 this.widget.appendTo('body');
             }
             this.minViewMode = options.minViewMode || this.$element.data('date-minviewmode') || 0;
@@ -102,7 +102,7 @@
             this.update();
             this.showMode();
             this._attachDatePickerEvents();
-            if(this.isInline)
+            if (this.isInline)
                 this.show();
         },
 
@@ -173,6 +173,8 @@
             }
             if (typeof newDate === 'string') {
                 this._date = this.parseDate(newDate);
+                if (!this._date)
+                    this._date = new Date(newDate);
             } else if (newDate) {
                 this._date = new Date(newDate);
             }
@@ -189,6 +191,8 @@
 
         setDate: function (date) {
             if (!date) this.setValue(null);
+            else if (typeof date === 'string')
+                this.setValue(date);
             else this.setValue(date.valueOf());
         },
 
@@ -196,7 +200,7 @@
             if (date instanceof Date) {
                 this.startDate = date;
             } else if (typeof date === 'string') {
-                this.startDate = new UTCDate(date);
+                this.startDate = new Date(date);
                 if (!this.startDate.getUTCFullYear()) {
                     this.startDate = -Infinity;
                 }
@@ -212,7 +216,7 @@
             if (date instanceof Date) {
                 this.endDate = date;
             } else if (typeof date === 'string') {
-                this.endDate = new UTCDate(date);
+                this.endDate = new Date(date);
                 if (!this.endDate.getUTCFullYear()) {
                     this.endDate = Infinity;
                 }
@@ -233,6 +237,8 @@
 
         setLocalDate: function (localDate) {
             if (!localDate) this.setValue(null);
+            else if (typeof localDate === 'string')
+                this.setValue(localDate);
             else
                 this.setValue(Date.UTC(
                     localDate.getFullYear(),
@@ -245,7 +251,7 @@
         },
 
         place: function () {
-            if(this.isInline)
+            if (this.isInline)
                 return;
             var position = 'absolute';
             var offset = this.component ? this.component.offset() : this.$element.offset();
@@ -822,7 +828,7 @@
             this._detachDatePickerGlobalEvents();
             this.widget.remove();
             this.$element.removeData('datetimepicker');
-            if(this.component)
+            if (this.component)
                 this.component.removeData('datetimepicker');
         },
 
@@ -1303,6 +1309,14 @@
         },
         getDaysInMonth: function (year, month) {
             return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+        },
+        parseFormat: function (format) {
+            var separator = format.match(/[.\/\-\s].*?/),
+                parts = format.split(/\W+/);
+            if (!separator || !parts || parts.length === 0) {
+                throw new Error("Invalid date format.");
+            }
+            return {separator: separator, parts: parts};
         },
         headTemplate: '<thead>' +
             '<tr>' +

@@ -20,7 +20,8 @@
     app.value('hngDateTimePickerConfig', {
         datepicker: {
             useDate: 'local',
-            inline: false
+            inline: false,
+            autoClose: true
         }
     });
     /**
@@ -43,30 +44,29 @@
                     time12Format: '=',
                     maskInput: '=',
                     pickerType: '=',
-                    useDate: '=' // [ 'local', 'utc' ]
+                    useDate: '=', // [ 'local', 'utc' ]
+                    startDate: '=',
+                    endDate: '='
                 },
                 link: function postLink(scope, element, attrs, ngModel) {
-                    var options = angular.extend({
-                            autoClose: true,
-                            pickDate: scope.pickDate,
-                            pickTime: scope.pickTime,
-                            pickSeconds: scope.pickSeconds,
-                            maskInput: scope.maskInput
-                        },
-                        $hngConfig.datepicker || { });
-                    var dateSetter = 'setDate';
+                    var options = angular.extend($hngConfig.datepicker || { }, {
+                        pickDate: scope.pickDate,
+                        pickTime: scope.pickTime,
+                        pickSeconds: scope.pickSeconds,
+                        maskInput: scope.maskInput,
+                        startDate: scope.startDate,
+                        endDate: scope.endDate
+                    });
+                    var dateSetter = 'setLocalDate';
                     angular.forEach([
                         'format',
                         'viewMode',
                         'weekStart',
-                        'startDate',
-                        'endDate',
                         'language',
                         'inline'
                     ], function (key) {
                         if (angular.isDefined(attrs[key]))
                             options[key] = attrs[key];
-
                     });
                     if (scope.time12Format) {
                         options['pick12HourFormat'] = true;
@@ -76,9 +76,11 @@
                     if (scope.maskInput === undefined) {
                         options['maskInput'] = true;
                     }
-                    if (scope.useDate === undefined) {
-                        useDate = 'local';
-                        dateSetter = 'setLocalDate'
+                    if (scope.useDate == 'utc') {
+                        dateSetter = 'setDate';
+                    } else {
+                        //scope.useDate = 'local';
+                        dateSetter = 'setLocalDate';
                     }
                     if (attrs.type) {
                         if (attrs.type == 'date') {
@@ -96,15 +98,15 @@
                     //  options['pickDate'] = true;
                     //  options['pickTime'] = true;
                     //}
-                    if(options['pickDate'] === undefined
-                        && options['pickTime'] === undefined){
+                    if (options['pickDate'] === undefined
+                        && options['pickTime'] === undefined) {
                         options['pickDate'] = true;
                         options['pickTime'] = true;
                     }
-                    if(options['pickDate'] === undefined){
+                    if (options['pickDate'] === undefined) {
                         options['pickDate'] = false;
                     }
-                    if(options['pickTime'] === undefined){
+                    if (options['pickTime'] === undefined) {
                         options['pickTime'] = false;
                     }
                     if (ngModel) {
@@ -124,22 +126,25 @@
                         // });
                         element.on('changeDate', function (ev) {
                             scope.$apply(function () {
-                                ngModel.$setViewValue(ev.localDate); //ev.date - UTC date
+                                if (scope.useDate == 'utc')
+                                    ngModel.$setViewValue(ev.date);
+                                else
+                                    ngModel.$setViewValue(ev.localDate);
                             });
                         });
                         attrs.$observe('useDate', function (value) {
                             if (value == 'utc') {
-                                useDate = 'utc';
+                                //scope.useDate = 'utc';
                                 dateSetter = 'setDate';
                             } else {
-                                useDate = 'local';
+                                //scope.useDate = 'local';
                                 dateSetter = 'setLocalDate';
                             }
                         });
-                        attrs.$observe('startDate', function (value) {
+                        scope.$watch('startDate', function (value) {
                             element.datetimepicker('setStartDate', value);
                         });
-                        attrs.$observe('endDate', function (value) {
+                        scope.$watch('endDate', function (value) {
                             element.datetimepicker('setEndDate', value);
                         });
                         var component = element.siblings('[data-toggle="datetimepicker"]');
