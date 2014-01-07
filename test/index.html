@@ -9,9 +9,9 @@
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
 
-    <link href="../release/styles/bootstrap-datetimepicker.css" rel="stylesheet"/>
-    <script src="../release/scripts/bootstrap-datetimepicker.js"></script>
-    <script src="../release/scripts/hng-date-time-picker.js"></script>
+    <link href="../src/styles/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script src="../src/scripts/bootstrap-datetimepicker.js"></script>
+    <script src="../src/scripts/hng-date-time-picker.js"></script>
     <script src="app.js"></script>
 
 
@@ -20,55 +20,36 @@
 <body ng-app="app" ng-controller="tstCtrl">
 <div class="container">
     <div class="row">
-        <form class="form-horizontal" role="form">
-
+        <form class="form-horizontal col-sm-7">
             <div class="form-group">
-                <label for="assignedon1" class="col-sm-3 control-label">
-                    Assigned On</label>
-
-                <div class="col-sm-3 input-group">
-                    <input type="text" class="form-control" id="assignedon1"
-                           placeholder="Assigned On" pick-date="true"
-                           ng-model="assignedon" hng-date-time-picker
-                           format="ddd dd-MMM-yyyy">
-          <span class="input-group-btn" data-toggle="datetimepicker">
-            <button class="btn btn-default" type="button">
-                <i class="glyphicon glyphicon-calendar"></i>
-            </button>
-          </span>
-                </div>
-
-                <div class="col-sm-2 input-group">
-                    <input type="text" class="form-control" id="assignedon2"
-                           placeholder="Assigned On" pick-time="true"
-                           ng-model="assignedon" hng-date-time-picker
-                           format="HH:mm PP">
-          <span class="input-group-btn" data-toggle="datetimepicker">
-            <button class="btn btn-default" type="button">
-                <i class="glyphicon glyphicon-time"></i>
-            </button>
-          </span>
-                </div>
-
-            </div>
-
-            <div class="form-group">
-                <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
+                <label class="col-sm-3 control-label">Assigned On</label>
 
                 <div class="col-sm-4">
-                    <input type="email" class="form-control" id="inputEmail3"
-                           placeholder="Email">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="dat"
+                               ng-model="assignedon"
+                               hng-date-time-picker pick-date="true"
+                               format="d dd-MMM-yyyy">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-calendar"></i> </span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="tim"
+                               data-ng-model="assignedon"
+                               hng-date-time-picker pick-time="true"
+                               format="HH:mm PP">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-time"></i></span>
+                    </div>
                 </div>
             </div>
-
         </form>
-    </div>
-    <div class="row">
-        <div class="well col-sm-8 col-sm-offset-2">
-      <pre>{{ assignedon | date:'dd-MMM-yyyy hh:mm:ss a' }}
+        <pre class="col-sm-5 well">
+        {{ assignedon | date:'dd-MMM-yyyy hh:mm:ss a' }}
         {{assignedon}}
-      </pre>
-        </div>
+        </pre>
     </div>
     <div class="row">
         <div class="col-sm-6">

@@ -110,22 +110,23 @@
                         options['pickTime'] = false;
                     }
                     if (ngModel) {
-
                         // $timeout(function(){
                         element.datetimepicker(options);
                         ngModel.$render = function ngModelRender() {
-                            if (!ngModel.$viewValue)
-                                return element.datetimepicker(dateSetter, new Date()); //'setDate' - UTC date
-                            else if (typeof ngModel.$viewValue === 'string')
+                            if (!ngModel.$viewValue) {
+                                ngModel.$setViewValue(new Date());
+                                return element.datetimepicker(dateSetter, ngModel.$viewValue); //'setDate' - UTC date
+                            } else if (typeof ngModel.$viewValue === 'string') {
+                                ngModel.$setViewValue(new Date(ngModel.$viewValue));
                                 return element.datetimepicker(dateSetter,
-                                    new Date(ngModel.$viewValue));
-                            else
+                                    ngModel.$viewValue);
+                            } else
                                 return element.datetimepicker(dateSetter, ngModel.$viewValue);
                         };
                         //   ngModel.$render();
                         // });
                         element.on('changeDate', function (ev) {
-                            scope.$apply(function () {
+                            safeApply(scope, function () {
                                 if (scope.useDate == 'utc')
                                     ngModel.$setViewValue(ev.date);
                                 else
@@ -162,9 +163,21 @@
                     //scope.$on('$destroy', function() {
                     //  element.datetimepicker('destroy');
                     //});
+                    var safeApply = function (scope, fn) {
+                        (scope.$$phase || scope.$root.$$phase) ?
+                            fn() : scope.$apply(fn);
+                    };
+                    // validate currentDate on startDate and endDate
+                    var adjustCurrentDate = function (cDate) {
+                        if (scope.startDate && scope.startDate > cDate) {
+
+                        }
+                    };
                 }
             };
         }
-    ]);
+    ])
+    ;
     return app;
-}));
+}))
+;

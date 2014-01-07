@@ -163,6 +163,8 @@
                 this.$element.val(formatted);
                 this._resetMaskPos(this.$element);
             }
+            this.$element.data('getDate', this.getDate());
+            this.$element.data('getLocalDate', this.getLocalDate());
         },
 
         setValue: function (newDate) {
@@ -303,23 +305,27 @@
         update: function (newDate) {
             var dateStr = newDate;
             if (!dateStr) {
-                if (this.isInput) {
-                    dateStr = this.$element.val();
-                } else {
-                    dateStr = this.$element.find('input').val();
-                }
-                if (dateStr) {
-                    this._date = this.parseDate(dateStr);
-                }
                 if (!this._date) {
-                    var tmp = new Date();
-                    this._date = UTCDate(tmp.getFullYear(),
-                        tmp.getMonth(),
-                        tmp.getDate(),
-                        tmp.getHours(),
-                        tmp.getMinutes(),
-                        tmp.getSeconds(),
-                        tmp.getMilliseconds());
+                    if (this.isInput) {
+                        dateStr = this.$element.val();
+                    } else {
+                        dateStr = this.$element.find('input').val();
+                    }
+                    if (dateStr) {
+                        this._date = this.parseDate(dateStr);
+                        if (!this._date)
+                            this._date = new Date(dateStr);
+                    }
+                    if (!this._date) {
+                        var tmp = new Date();
+                        this._date = UTCDate(tmp.getFullYear(),
+                            tmp.getMonth(),
+                            tmp.getDate(),
+                            tmp.getHours(),
+                            tmp.getMinutes(),
+                            tmp.getSeconds(),
+                            tmp.getMilliseconds());
+                    }
                 }
             }
             this.viewDate = UTCDate(this._date.getUTCFullYear(), this._date.getUTCMonth(), 1, 0, 0, 0, 0);
@@ -1142,19 +1148,19 @@
         day: {
             property: 'Day',
             getPattern: function () {
-                return '(0?[1-9]|[1-2][0-9]|3[0-1])\\b';
+                return '([a-zA-Z]*day)\\b';
             }
         },
         ddd: {
             property: 'DayShort',
             getPattern: function () {
-                return '(0?[1-9]|[1-2][0-9]|3[0-1])\\b';
+                return '([a-zA-Z]{3})\\b';
             }
         },
         d: {
             property: 'DayMin',
             getPattern: function () {
-                return '(0?[1-9]|[1-2][0-9]|3[0-1])\\b';
+                return '([a-zA-Z]{2})\\b';
             }
         },
         MM: {
@@ -1166,13 +1172,13 @@
         MMM: {
             property: 'MonthShort',
             getPattern: function () {
-                return '(0?[1-9]|1[0-2])\\b';
+                return '([a-zA-Z]{3})\\b';
             }
         },
         MMMM: {
             property: 'Month',
             getPattern: function () {
-                return '(0?[1-9]|1[0-2])\\b';
+                return '([a-zA-Z])\\b';
             }
         },
         yy: {
